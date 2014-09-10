@@ -4,35 +4,60 @@
     <SetupId>0</SetupId>
     <Device>nRF8001_Dx</Device>
     <Service Type="local" PrimaryService="true">
+        <Name>Larry Service</Name>
+        <Uuid>0105</Uuid>
+        <Characteristic>
+            <Name>RandomNumber</Name>
+            <Uuid>1638</Uuid>
+            <DefaultValue>255</DefaultValue>
+            <UsePresentationFormat>1</UsePresentationFormat>
+            <MaxDataLength>1</MaxDataLength>
+            <AttributeLenType>1</AttributeLenType>
+            <ForceOpen>false</ForceOpen>
+            <Properties>
+                <WriteWithoutResponse>false</WriteWithoutResponse>
+                <Write>false</Write>
+                <Notify>true</Notify>
+                <Indicate>false</Indicate>
+                <Broadcast>false</Broadcast>
+            </Properties>
+            <SetPipe>true</SetPipe>
+            <AckIsAuto>false</AckIsAuto>
+            <PresentationFormatDescriptor Value="0000" Exponent="0" Format="4" NameSpace="01" Unit="0000"/>
+            <PeriodForReadingThisCharacteristic>0</PeriodForReadingThisCharacteristic>
+            <PeriodForProperties/>
+        </Characteristic>
+    </Service>
+    <Service Type="remote" PrimaryService="true">
         <Name>Lars Service</Name>
         <Uuid>6660</Uuid>
         <Characteristic>
             <Name>RandomSum</Name>
             <Uuid>6666</Uuid>
-            <DefaultValue>15</DefaultValue>
+            <DefaultValue></DefaultValue>
             <UsePresentationFormat>1</UsePresentationFormat>
-            <MaxDataLength>2</MaxDataLength>
+            <MaxDataLength>1</MaxDataLength>
             <AttributeLenType>1</AttributeLenType>
             <ForceOpen>false</ForceOpen>
             <Properties>
+                <Read>true</Read>
                 <WriteWithoutResponse>false</WriteWithoutResponse>
                 <Write>false</Write>
                 <Notify>false</Notify>
                 <Indicate>false</Indicate>
                 <Broadcast>false</Broadcast>
             </Properties>
-            <SetPipe>true</SetPipe>
             <AckIsAuto>false</AckIsAuto>
-            <PresentationFormatDescriptor Value="0000" Exponent="0" Format="6" NameSpace="01" Unit="0000"/>
+            <PresentationFormatDescriptor Value="0000" Exponent="0" Format="4" NameSpace="01" Unit="0000"/>
             <PeriodForReadingThisCharacteristic>0</PeriodForReadingThisCharacteristic>
             <PeriodForProperties/>
         </Characteristic>
     </Service>
     <Gapsettings>
-        <Name>LarsDevice</Name>
+        <Name>Larry</Name>
         <DeviceNameWriteLength>0</DeviceNameWriteLength>
         <LocalPipeOnDeviceName>false</LocalPipeOnDeviceName>
-        <DeviceNameShortLength>0</DeviceNameShortLength>
+        <DeviceNameShortLength>1</DeviceNameShortLength>
         <Apperance>0000</Apperance>
         <SecurityLevel>0</SecurityLevel>
         <AuthenticationReq>0</AuthenticationReq>
@@ -41,12 +66,12 @@
         <SecurityRequestDelay>10</SecurityRequestDelay>
         <MinimumKeySize>7</MinimumKeySize>
         <MaximumKeySize>16</MaximumKeySize>
-        <AdvertisingDataBondedBitmap>0</AdvertisingDataBondedBitmap>
+        <AdvertisingDataBondedBitmap>1a</AdvertisingDataBondedBitmap>
         <AdvertisingDataGeneralBitmap>1a</AdvertisingDataGeneralBitmap>
-        <AdvertisingDataBrodcastBitmap>0</AdvertisingDataBrodcastBitmap>
-        <AdvertisingDataBondedScanResponseBitmap>0</AdvertisingDataBondedScanResponseBitmap>
-        <AdvertisingDataGeneralScanResponseBitmap>1a</AdvertisingDataGeneralScanResponseBitmap>
-        <AdvertisingDataBrodcastScanResponseBitmap>0</AdvertisingDataBrodcastScanResponseBitmap>
+        <AdvertisingDataBrodcastBitmap>a</AdvertisingDataBrodcastBitmap>
+        <AdvertisingDataBondedScanResponseBitmap>a</AdvertisingDataBondedScanResponseBitmap>
+        <AdvertisingDataGeneralScanResponseBitmap>a</AdvertisingDataGeneralScanResponseBitmap>
+        <AdvertisingDataBrodcastScanResponseBitmap>a</AdvertisingDataBrodcastScanResponseBitmap>
         <AdvertisingDataBondedBitmapCustom>0</AdvertisingDataBondedBitmapCustom>
         <AdvertisingDataGeneralBitmapCustom>0</AdvertisingDataGeneralBitmapCustom>
         <AdvertisingDataBrodcastBitmapCustom>0</AdvertisingDataBrodcastBitmapCustom>
@@ -61,8 +86,11 @@
         <AddServiceUpdateCharacteristic>false</AddServiceUpdateCharacteristic>
         <AddServiceUpdateCharacteristicPipe>false</AddServiceUpdateCharacteristicPipe>
         <ServiceToAdvertise>
-            <Uuid>6660</Uuid>
+            <Uuid>0105</Uuid>
         </ServiceToAdvertise>
+        <SercieToSolicitate>
+            <Uuid>6660</Uuid>
+        </SercieToSolicitate>
         <CustomAdTypes/>
     </Gapsettings>
     <Hardwaresettings>

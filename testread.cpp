@@ -83,31 +83,36 @@ void Timer1stop()
 void randomNum(void)
 {
 	uint8_t rnd = random(0, 255);
-
-	lib_aci_set_local_data(&aci_state, PIPE_LARS_SERVICE_RANDOMSUM_TX, &rnd,
+	bool setLocal = false;
+	setLocal = lib_aci_set_local_data(&aci_state, PIPE_LARS_SERVICE_RANDOMSUM_SET, &rnd,
 			sizeof(rnd));
+	if (setLocal)
+		Serial.println(F("SET LOCAL OK"));
 	if (lib_aci_is_pipe_available(&aci_state,
-			PIPE_LARS_SERVICE_RANDOMSUM_TX)) {
+			PIPE_LARS_SERVICE_RANDOMSUM_SET)) {
 		//is sending them it is subscribed
+		Serial.println(F("Pipe PIPE_LARS_SERVICE_RANDOMSUM_SET is available"));
+//		if (lib_aci_send_data(PIPE_LARS_SERVICE_RANDOMSUM_SET, &rnd,
+//				sizeof(rnd))) {
+//			Serial.println(F("OK lib send data"));
+//			aci_state.data_credit_available--;
+//		} else {
+//			Serial.println(F("FAIL lib send data"));
+//		}
 
-		if (lib_aci_send_data(PIPE_LARS_SERVICE_RANDOMSUM_TX, &rnd,
-				sizeof(rnd))) {
-			Serial.println(F("OK lib send data"));
-			aci_state.data_credit_available--;
-		} else {
-			Serial.println(F("FAIL lib send data"));
-		}
-		radio_ack_pending = true;
 
 	} else {
-		Serial.println(F("NOT Sending"));
+		Serial.println(F("Pipe PIPE_LARS_SERVICE_RANDOMSUM_SET not available"));
 	}
+	aci_state.data_credit_available--;
+	Serial.print("Data Credit available: ");
+	Serial.println(aci_state.data_credit_available,DEC);
 
-	Serial.print(F("perform random number: HEX: "));
-	Serial.print(rnd, HEX);
-	Serial.print(F(" DEC "));
-	Serial.print(rnd);
-	Serial.println("\n");
+//	Serial.print(F("perform random number: HEX: "));
+//	Serial.print(rnd, HEX);
+//	Serial.print(F(" DEC "));
+//	Serial.print(rnd);
+//	Serial.println("\n");
 }
 
 /*** FUNC
@@ -242,23 +247,15 @@ void aci_loop()
           Serial.println(F("Evt Cmd respone: Error. Arduino is in an while(1); loop"));
           while (1);
         }
-        else
-        {
-          switch (aci_evt->params.cmd_rsp.cmd_opcode)
-          {
-            case PIPE_LARS_SERVICE_RANDOMSUM_TX:
+        Serial.println(F("ACI_EVET_CMD_RSP == SUCCESS"));
 
-                Serial.print(F("Battery level value received: "));
-
-          }
-        }
         break;
 
       case ACI_EVT_PIPE_STATUS:
         Serial.println(F("Evt Pipe Status"));
         /** check if the peer has subscribed to the Heart Rate Measurement Characteristic for Notifications
         */
-        if (lib_aci_is_pipe_available(&aci_state, PIPE_LARS_SERVICE_RANDOMSUM_TX)
+        if (lib_aci_is_pipe_available(&aci_state, PIPE_LARS_SERVICE_RANDOMSUM_SET)
             && (false == timing_change_done) )
         {
           /*
@@ -283,18 +280,17 @@ void aci_loop()
         radio_ack_pending  = false;
         aci_state.data_credit_available = aci_state.data_credit_total;
         timing_change_done = false;
-        Serial.println(F("Evt Connected"));
+        Serial.print(F("Evt Connected, total credit "));
+        Serial.println(aci_state.data_credit_available, DEC);
         break;
 
 
       case ACI_EVT_DATA_CREDIT:
-        aci_state.data_credit_available = aci_state.data_credit_available + aci_evt->params.data_credit.credit;
-        /**
-        Bluetooth Radio ack received from the peer radio for the data packet sent.
-        This also signals that the buffer used by the nRF8001 for the data packet is available again.
-        */
-        radio_ack_pending = false;
-        break;
+			aci_state.data_credit_available = aci_state.data_credit_available + aci_evt->params.data_credit.credit;
+			Serial.print("ACI_EVT_DATA_CREDIT     ");
+			Serial.print("Data Credit available: ");
+			Serial.println(aci_state.data_credit_available,DEC);
+			break;
 
       case ACI_EVT_PIPE_ERROR:
         //See the appendix in the nRF8001 Product Specication for details on the error codes
