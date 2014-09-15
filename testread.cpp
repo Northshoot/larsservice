@@ -86,8 +86,7 @@ void randomNum(void)
 	bool setLocal = false;
 	setLocal = lib_aci_set_local_data(&aci_state, PIPE_LARS_SERVICE_RANDOMSUM_SET, &rnd,
 			sizeof(rnd));
-	if (setLocal)
-		Serial.println(F("SET LOCAL OK"));
+
 	if (lib_aci_is_pipe_available(&aci_state,
 			PIPE_LARS_SERVICE_RANDOMSUM_SET)) {
 		//is sending them it is subscribed
@@ -104,15 +103,15 @@ void randomNum(void)
 	} else {
 		Serial.println(F("Pipe PIPE_LARS_SERVICE_RANDOMSUM_SET not available"));
 	}
-	aci_state.data_credit_available--;
-	Serial.print("Data Credit available: ");
-	Serial.println(aci_state.data_credit_available,DEC);
+//	aci_state.data_credit_available--;
+//	Serial.print("Data Credit available: ");
+//	Serial.println(aci_state.data_credit_available,DEC);
 
-//	Serial.print(F("perform random number: HEX: "));
-//	Serial.print(rnd, HEX);
-//	Serial.print(F(" DEC "));
-//	Serial.print(rnd);
-//	Serial.println("\n");
+	Serial.print(F("perform random number: HEX: "));
+	Serial.print(rnd, HEX);
+	Serial.print(F(" DEC "));
+	Serial.print(rnd);
+	Serial.println("\n");
 }
 
 /*** FUNC
