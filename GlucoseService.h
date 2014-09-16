@@ -11,6 +11,7 @@
  */
 #ifndef GLUCOSESERVICE_H_
 #define GLUCOSESERVICE_H_
+#include "glucose_service.h"
 
 class GlucoseService {
 public:
