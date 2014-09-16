@@ -5,30 +5,38 @@
  *      Author: lauril
  */
 
-#include <Time.h>
-#include "RTClib.h"
-#include <Wire.h>
-#include "BaseTime.h"
+#include <Arduino.h>
+#include "Time/Time.h"
+#include "BleBaseTime.h"
 
-BleBaseTime::BleBaseTime() {
-	// TODO Auto-generated constructor stub
-	  Serial.begin(9600);
-	  setSyncProvider(RTC.get);   // the function to get the time from the RTC
-	  if(timeStatus()!= timeSet)
-	     Serial.println("Unable to sync with the RTC");
-	  else
-	     Serial.println("RTC has set the system time");
-	datetime = {0};
-	datetime.year=2014;
-	datetime.month = NOV;
 
+BleBaseTime::BleBaseTime(int x) {
+
+	//just optimization during play time
+	// in deployment should be made cleaner.
+	Serial.print("BleBaseTime up");
+	Serial.println(x, HEX);
+	currentdatetime.year=2014;
+	currentdatetime.month = SEP;
+	currentdatetime.day = 16;
+
+}
+
+void
+BleBaseTime::printT(){
+	Serial.println("Time now");
 }
 
 BaseTime
 BleBaseTime::getNow(){
-	datetime.day = day();
+	currentdatetime.hours=hour();
+	currentdatetime.minutes=minute();
+	currentdatetime.seconds=second();
+	return currentdatetime;
 
 }
+
+
 BleBaseTime::~BleBaseTime() {
 	// TODO Auto-generated destructor stub
 

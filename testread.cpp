@@ -3,7 +3,9 @@
 #include "services.h"
 #include <lib_aci.h>
 #include <aci_setup.h>
+#include "testread.h"
 
+#include "GlucoseService.h"
 static services_pipe_type_mapping_t
         services_pipe_type_mapping[NUMBER_OF_PIPES] = SERVICES_PIPE_TYPE_MAPPING_CONTENT;
 
@@ -80,38 +82,33 @@ void Timer1stop()
   TIMSK1 = 0x00;
 }
 
+GlucoseService gl(0);
+GlucoseMeasurementContext glcontext = gl.getGlucoseMeasurementContext();
 void randomNum(void)
 {
-	uint8_t rnd = random(75, 150);
+	GlucoseMeasurment glm = gl.getGlucoseMeasurment();
 	bool setLocal = false;
-	setLocal = lib_aci_set_local_data(&aci_state, PIPE_GLUCOSE_GLUCOSE_MEASURMENT_TX, &rnd,
-			sizeof(rnd));
+	setLocal = lib_aci_set_local_data(&aci_state, PIPE_GLUCOSE_GLUCOSE_MEASURMENT_TX, (uint8_t*) &glm,
+			sizeof(glm));
 
-	if (lib_aci_is_pipe_available(&aci_state,
-			PIPE_GLUCOSE_GLUCOSE_MEASURMENT_TX)) {
-		//is sending them it is subscribed
-		Serial.println(F("Pipe PIPE_GLUCOSE_GLUCOSE_MEASURMENT_TX is available"));
-//		if (lib_aci_send_data(PIPE_LARS_SERVICE_RANDOMSUM_SET, &rnd,
-//				sizeof(rnd))) {
-//			Serial.println(F("OK lib send data"));
-//			aci_state.data_credit_available--;
-//		} else {
-//			Serial.println(F("FAIL lib send data"));
-//		}
-
-
-	} else {
-		Serial.println(F("Pipe PIPE_LARS_SERVICE_RANDOMSUM_SET not available"));
+	if(lib_aci_is_pipe_available(&aci_state, PIPE_GLUCOSE_GLUCOSE_MEASURMENT_TX)){
+		lib_aci_send_data(PIPE_GLUCOSE_GLUCOSE_MEASURMENT_TX, (uint8_t*) &glm,
+			sizeof(glm));
+		lib_aci_send_data(PIPE_GLUCOSE_GLUCOSE_MEASUREMENT_CONTEXT_TX, (uint8_t*) &glcontext,
+					sizeof(glcontext));
 	}
-//	aci_state.data_credit_available--;
-//	Serial.print("Data Credit available: ");
-//	Serial.println(aci_state.data_credit_available,DEC);
 
-	Serial.print(F("perform random number: HEX: "));
-	Serial.print(rnd, HEX);
-	Serial.print(F(" DEC "));
-	Serial.print(rnd);
-	Serial.println("\n");
+
+	aci_state.data_credit_available--;
+	Serial.print("setLocal: ");
+	Serial.print(setLocal, DEC);
+	Serial.print(" sizeof(glm): ");
+	Serial.print(sizeof(glm),DEC);
+	Serial.print(" glm.sequencenumber: ");
+	Serial.print(glm.sequencenumber,DEC);
+	Serial.print(" glm.glucose_concentration: ");
+	Serial.println(glm.glucose_concentration,HEX);
+
 }
 
 /*** FUNC
@@ -137,10 +134,11 @@ void __ble_assert(const char *file, uint16_t line)
   while(1);
 }
 
+
+
 void setup(void)
 {
   Serial.begin(115200);
-
 
   Serial.println(F("Arduino setup: Glucose measurement"));
 
@@ -235,16 +233,16 @@ void aci_loop()
         //If an ACI command response event comes with an error -> stop
         if (ACI_STATUS_SUCCESS != aci_evt->params.cmd_rsp.cmd_status )
         {
-          //ACI ReadDynamicData and ACI WriteDynamicData will have status codes of
-          //TRANSACTION_CONTINUE and TRANSACTION_COMPLETE
-          //all other ACI commands will have status code of ACI_STATUS_SCUCCESS for a successful command
+            //ACI ReadDynamicData and ACI WriteDynamicData will have status codes of
+            //TRANSACTION_CONTINUE and TRANSACTION_COMPLETE
+            //all other ACI commands will have status code of ACI_STATUS_SCUCCESS for a successful command
 
-          Serial.print(F("ACI Status of ACI Evt Cmd Rsp 0x"));
-          Serial.println(aci_evt->params.cmd_rsp.cmd_status, HEX);
-          Serial.print(F("ACI Command 0x"));
-          Serial.println(aci_evt->params.cmd_rsp.cmd_opcode, HEX);
-          Serial.println(F("Evt Cmd respone: Error. Arduino is in an while(1); loop"));
-          while (1);
+            Serial.print(F("ACI Status of ACI Evt Cmd Rsp 0x"));
+            Serial.println(aci_evt->params.cmd_rsp.cmd_status, HEX);
+            Serial.print(F("ACI Command 0x"));
+            Serial.println(aci_evt->params.cmd_rsp.cmd_opcode, HEX);
+            Serial.println(F("Evt Cmd respone: Error. Arduino is in an while(1); loop"));
+            while (1);
         }
 
         break;
@@ -253,6 +251,7 @@ void aci_loop()
         Serial.println(F("Evt Pipe Status"));
         /** check if the peer has subscribed to the Heart Rate Measurement Characteristic for Notifications
         */
+
         if (lib_aci_is_pipe_available(&aci_state, PIPE_GLUCOSE_GLUCOSE_MEASURMENT_TX)
             && (false == timing_change_done) )
         {
@@ -260,8 +259,26 @@ void aci_loop()
           Request a change to the link timing as set in the GAP -> Preferred Peripheral Connection Parameters
           Change the setting in nRFgo studio -> nRF8001 configuration -> GAP Settings and recompile the xml file.
           */
+        	Serial.println(F("PIPE_GLUCOSE_GLUCOSE_MEASURMENT_TX && Timing change"));
           lib_aci_change_timing_GAP_PPCP();
           timing_change_done = true;
+        } else if(lib_aci_is_pipe_available(&aci_state, PIPE_GLUCOSE_GLUCOSE_MEASURMENT_TX)){
+        	Serial.println(F("Pipe: PIPE_GLUCOSE_GLUCOSE_MEASURMENT_TX"));
+        } else if(lib_aci_is_pipe_available(&aci_state, PIPE_GLUCOSE_GLUCOSE_MEASUREMENT_CONTEXT_TX)){
+        	Serial.println(F("Pipe: PIPE_GLUCOSE_GLUCOSE_MEASUREMENT_CONTEXT_TX"));
+        }else if(lib_aci_is_pipe_available(&aci_state, PIPE_GLUCOSE_GLUCOSE_FEATURE_SET)){
+        	Serial.println(F("Pipe: PIPE_GLUCOSE_GLUCOSE_FEATURE_SET"));
+        	if (lib_aci_set_local_data(&aci_state, PIPE_GLUCOSE_GLUCOSE_FEATURE_SET,
+        			(uint8_t*)&gl.getGlucoseFeature(), sizeof(GlucoseFeature))){
+        		Serial.print(F("TX: PIPE_GLUCOSE_GLUCOSE_FEATURE_SET "));
+        		Serial.println(gl.getGlucoseFeature().bitfield, HEX);
+        	} else {
+        		Serial.println("Error setting local PIPE_GLUCOSE_GLUCOSE_FEATURE_SET data");
+        	}
+        }else if(lib_aci_is_pipe_available(&aci_state, PIPE_GLUCOSE_RECORD_ACCESS_CONTROL_POINT_TX_ACK)){
+        	Serial.println(F("Pipe: PIPE_GLUCOSE_RECORD_ACCESS_CONTROL_POINT_TX_ACK"));
+        } else if(lib_aci_is_pipe_available(&aci_state, PIPE_GLUCOSE_RECORD_ACCESS_CONTROL_POINT_RX_ACK)){
+        	Serial.println(F("Pipe: PIPE_GLUCOSE_RECORD_ACCESS_CONTROL_POINT_RX_ACK"));
         }
         break;
 

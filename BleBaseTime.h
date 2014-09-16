@@ -1,18 +1,18 @@
 /*
- * base_time.h
+ * BaseTime.h
  *
  *  Created on: Sep 15, 2014
  *      Author: lauril
  */
 
-#ifndef BASE_TIME_H_
-#define BASE_TIME_H_
-
+#ifndef BASETIME_H_
+#define BASETIME_H_
+#include <Arduino.h>
 
 typedef enum {UNKNOWN=0x0,	JAN=0x1,			FEB=0x2,			MAR=0x3,
 				APR=0x4,	MAY=0x5,			JUN=0x6,			JUL=0x7,
-				AUG=0x8,	SEP=0x9,			OCT=0xA, 			NOV = 0xB,
-				DEC=0xC
+				AUG=0x8,	SEP=0x9,			OCTB=0xA, 			NOV = 0xB,
+				DECEM=0xC
 			} Month;
 
 typedef struct {
@@ -51,4 +51,14 @@ Hours in Date Time are represented in the 24h system.
 } BaseTime;
 
 
-#endif /* BASE_TIME_H_ */
+class BleBaseTime {
+	public:
+		BleBaseTime(int x);
+		BaseTime getNow();
+		void printT();
+		virtual ~BleBaseTime();
+	private:
+		BaseTime currentdatetime;
+};
+
+#endif /* BASETIME_H_ */
