@@ -82,15 +82,15 @@ void Timer1stop()
 
 void randomNum(void)
 {
-	uint8_t rnd = random(0, 255);
+	uint8_t rnd = random(75, 150);
 	bool setLocal = false;
-	setLocal = lib_aci_set_local_data(&aci_state, PIPE_LARS_SERVICE_RANDOMSUM_SET, &rnd,
+	setLocal = lib_aci_set_local_data(&aci_state, PIPE_GLUCOSE_GLUCOSE_MEASURMENT_TX, &rnd,
 			sizeof(rnd));
 
 	if (lib_aci_is_pipe_available(&aci_state,
-			PIPE_LARS_SERVICE_RANDOMSUM_SET)) {
+			PIPE_GLUCOSE_GLUCOSE_MEASURMENT_TX)) {
 		//is sending them it is subscribed
-		Serial.println(F("Pipe PIPE_LARS_SERVICE_RANDOMSUM_SET is available"));
+		Serial.println(F("Pipe PIPE_GLUCOSE_GLUCOSE_MEASURMENT_TX is available"));
 //		if (lib_aci_send_data(PIPE_LARS_SERVICE_RANDOMSUM_SET, &rnd,
 //				sizeof(rnd))) {
 //			Serial.println(F("OK lib send data"));
@@ -142,7 +142,7 @@ void setup(void)
   Serial.begin(115200);
 
 
-  Serial.println(F("Arduino setup"));
+  Serial.println(F("Arduino setup: Glucose measurement"));
 
   /**
   Point ACI data structures to the the setup data that the nRFgo studio generated for the nRF8001
@@ -246,7 +246,6 @@ void aci_loop()
           Serial.println(F("Evt Cmd respone: Error. Arduino is in an while(1); loop"));
           while (1);
         }
-        Serial.println(F("ACI_EVET_CMD_RSP == SUCCESS"));
 
         break;
 
@@ -254,7 +253,7 @@ void aci_loop()
         Serial.println(F("Evt Pipe Status"));
         /** check if the peer has subscribed to the Heart Rate Measurement Characteristic for Notifications
         */
-        if (lib_aci_is_pipe_available(&aci_state, PIPE_LARS_SERVICE_RANDOMSUM_SET)
+        if (lib_aci_is_pipe_available(&aci_state, PIPE_GLUCOSE_GLUCOSE_MEASURMENT_TX)
             && (false == timing_change_done) )
         {
           /*

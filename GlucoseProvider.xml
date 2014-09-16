@@ -92,7 +92,7 @@
         </Characteristic>
     </Service>
     <Gapsettings>
-        <Name>GlucoseDevice</Name>
+        <Name>GlucoseProvider</Name>
         <DeviceNameWriteLength>0</DeviceNameWriteLength>
         <LocalPipeOnDeviceName>false</LocalPipeOnDeviceName>
         <DeviceNameShortLength>1</DeviceNameShortLength>
