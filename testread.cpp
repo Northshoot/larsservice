@@ -223,6 +223,10 @@ void aci_loop()
               Timer1start();
               lib_aci_connect(30/* in seconds */, 0x0100 /* advertising interval 100ms*/);
               Serial.println(F("Advertising started"));
+			  Serial.print(F("Connection interval: "));
+			  Serial.print(aci_evt->params.timing.conn_rf_interval*1.25*100, DEC);
+
+			  Serial.println(F(" ms"));
             }
             break;
           }
@@ -248,7 +252,11 @@ void aci_loop()
         break;
 
       case ACI_EVT_PIPE_STATUS:
-        Serial.println(F("Evt Pipe Status"));
+        Serial.println(F("ACI_EVT_PIPE_STATUS"));
+        Serial.print(F("Connection interval: "));
+        Serial.print(aci_evt->params.timing.conn_rf_interval * 1.25*100, DEC);
+        Serial.println(F(" ms"));
+
         /** check if the peer has subscribed to the Heart Rate Measurement Characteristic for Notifications
         */
 
@@ -292,11 +300,18 @@ void aci_loop()
         break;
 
       case ACI_EVT_CONNECTED:
+
         radio_ack_pending  = false;
         aci_state.data_credit_available = aci_state.data_credit_total;
         timing_change_done = false;
-        Serial.print(F("Evt Connected, total credit "));
-        Serial.println(aci_state.data_credit_available, DEC);
+       Serial.println(F("ACI_EVT_CONNECTED "));
+//        Serial.println(aci_state.data_credit_available, DEC);
+        Serial.print(F("Connection interval: "));
+        Serial.print(aci_evt->params.timing.conn_rf_interval * 1.25*100, DEC);
+        Serial.println(F(" ms"));
+        Serial.print(F("aci_state.connection_interval: "));
+        Serial.print(aci_state.connection_interval, DEC);
+        lib_aci_change_timing(800,800,0,500);
         break;
 
 

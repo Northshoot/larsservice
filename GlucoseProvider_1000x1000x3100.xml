@@ -11,7 +11,7 @@
             <Uuid>2a18</Uuid>
             <DefaultValue></DefaultValue>
             <UsePresentationFormat>0</UsePresentationFormat>
-            <MaxDataLength>16</MaxDataLength>
+            <MaxDataLength>20</MaxDataLength>
             <AttributeLenType>1</AttributeLenType>
             <ForceOpen>false</ForceOpen>
             <Properties>
@@ -108,7 +108,7 @@
         <AdvertisingDataGeneralBitmap>1a</AdvertisingDataGeneralBitmap>
         <AdvertisingDataBrodcastBitmap>0</AdvertisingDataBrodcastBitmap>
         <AdvertisingDataBondedScanResponseBitmap>0</AdvertisingDataBondedScanResponseBitmap>
-        <AdvertisingDataGeneralScanResponseBitmap>0</AdvertisingDataGeneralScanResponseBitmap>
+        <AdvertisingDataGeneralScanResponseBitmap>1a</AdvertisingDataGeneralScanResponseBitmap>
         <AdvertisingDataBrodcastScanResponseBitmap>0</AdvertisingDataBrodcastScanResponseBitmap>
         <AdvertisingDataBondedBitmapCustom>0</AdvertisingDataBondedBitmapCustom>
         <AdvertisingDataGeneralBitmapCustom>0</AdvertisingDataGeneralBitmapCustom>
@@ -117,10 +117,10 @@
         <AdvertisingDataGeneralScanResponseBitmapCustom>0</AdvertisingDataGeneralScanResponseBitmapCustom>
         <AdvertisingDataBrodcastScanResponseBitmapCustom>0</AdvertisingDataBrodcastScanResponseBitmapCustom>
         <TxPowerLevelOffset>0</TxPowerLevelOffset>
-        <MinimumConnectionInterval>65535</MinimumConnectionInterval>
-        <MaximumConnectionInterval>65535</MaximumConnectionInterval>
+        <MinimumConnectionInterval>800</MinimumConnectionInterval>
+        <MaximumConnectionInterval>800</MaximumConnectionInterval>
         <SlaveLatency>0</SlaveLatency>
-        <TimeoutMultipler>65535</TimeoutMultipler>
+        <TimeoutMultipler>310</TimeoutMultipler>
         <AddServiceUpdateCharacteristic>false</AddServiceUpdateCharacteristic>
         <AddServiceUpdateCharacteristicPipe>false</AddServiceUpdateCharacteristicPipe>
         <ServiceToAdvertise>

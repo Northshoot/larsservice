@@ -37,10 +37,6 @@
 #include "hal_platform.h" 
 #include "aci.h"
 
-// You have now chosen to upload the configuration to OTP on the device.
-// This will result in a device that you can not modify afterwards. If this is your intention,
-// remove this comment and the #error below
-#error Generating configuration for OTP. Please verify usage by removing this error message from include file.
 
 #define SETUP_ID 0
 #define SETUP_FORMAT 3 /** nRF8001 D */
@@ -77,10 +73,10 @@
   {ACI_STORE_LOCAL, ACI_RX_ACK},   \
 }
 
-#define GAP_PPCP_MAX_CONN_INT 0x320 /**< Maximum connection interval as a multiple of 1.25 msec , 0xFFFF means no specific value requested */
-#define GAP_PPCP_MIN_CONN_INT  0x320 /**< Minimum connection interval as a multiple of 1.25 msec , 0xFFFF means no specific value requested */
+#define GAP_PPCP_MAX_CONN_INT 0xffff /**< Maximum connection interval as a multiple of 1.25 msec , 0xFFFF means no specific value requested */
+#define GAP_PPCP_MIN_CONN_INT  0xffff /**< Minimum connection interval as a multiple of 1.25 msec , 0xFFFF means no specific value requested */
 #define GAP_PPCP_SLAVE_LATENCY 0
-#define GAP_PPCP_CONN_TIMEOUT 0x136 /** Connection Supervision timeout multiplier as a multiple of 10msec, 0xFFFF means no specific value requested */
+#define GAP_PPCP_CONN_TIMEOUT 0xffff /** Connection Supervision timeout multiplier as a multiple of 10msec, 0xFFFF means no specific value requested */
 
 #define NB_SETUP_MESSAGES 20
 #define SETUP_MESSAGES_CONTENT {\
@@ -133,7 +129,7 @@
     {0x00,\
         {\
             0x1f,0x06,0x20,0x54,0x06,0x28,0x03,0x01,0x02,0x07,0x00,0x04,0x2a,0x06,0x04,0x09,0x08,0x00,0x07,0x2a,\
-            0x04,0x01,0x20,0x03,0x20,0x03,0x00,0x00,0x36,0x01,0x04,0x04,\
+            0x04,0x01,0xff,0xff,0xff,0xff,0x00,0x00,0xff,0xff,0x04,0x04,\
         },\
     },\
     {0x00,\
@@ -195,7 +191,7 @@
     },\
     {0x00,\
         {\
-            0x06,0x06,0xf0,0x00,0x83,0x5b,0x6b,\
+            0x06,0x06,0xf0,0x00,0x03,0x94,0x89,\
         },\
     },\
 }
